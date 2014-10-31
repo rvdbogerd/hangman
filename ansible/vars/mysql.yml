@@ -1,0 +1,4 @@
+database:
+    db: hangman
+    user: hangman
+    pass: roobaz
