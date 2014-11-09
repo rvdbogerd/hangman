@@ -26,7 +26,7 @@ class Word
      */
     public function __construct($word)
     {
-        $this->word = $word;
+        $this->word = (string) $word;
     }
 
     /**

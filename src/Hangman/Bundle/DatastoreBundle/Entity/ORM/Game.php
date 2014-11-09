@@ -55,10 +55,11 @@ class Game
     /**
      * @param $character
      * @throws InvalidCharacterGuessedException
+     * @return $this
      */
     public function guess($character)
     {
-        if(in_array($character, $this->charactersGuessed)) {
+        if (in_array($character, $this->charactersGuessed)) {
             throw new InvalidCharacterGuessedException('Character was already guessed, please try again.');
         }
 
@@ -66,15 +67,16 @@ class Game
         $this->triesLeft -= 1;
 
         $this->updateStatusAfterGuessing();
+
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return boolean
      */
     public function wordIsGuessed()
     {
-        //return $this->word->matchesGuessedCharacters($this->charactersGuessed);
-        return true;
+        return $this->getWord()->matchesGuessedCharacters($this->charactersGuessed);
     }
 
     /**
@@ -108,6 +110,14 @@ class Game
     protected function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return Word
+     */
+    protected function getWord()
+    {
+        return new Word($this->word);
     }
 
     /**
