@@ -36,4 +36,18 @@ class Word
     {
         return $this->word;
     }
+
+    /**
+     * @param array $characters
+     * @return bool
+     */
+    public function matchesGuessedCharacters(array $characters)
+    {
+        foreach (str_split($this->word) as $wordCharacter) {
+            if (!in_array($wordCharacter, $characters)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
