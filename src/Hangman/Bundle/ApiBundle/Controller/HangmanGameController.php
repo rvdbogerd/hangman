@@ -3,14 +3,23 @@
 namespace Hangman\Bundle\ApiBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class HangmanApiController extends Controller
+class HangmanGameController extends Controller
 {
-    public function createAction()
+    /**
+     *
+     *
+     * @return Response
+     */
+    public function startAction()
     {
-        return new Response(
-            
+        return new JsonResponse([
+                'word' => '..df..',
+                'tries_left' => 6,
+                'status' => 'busy|fail|success'
+            ]
         );
     }
 }

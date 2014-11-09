@@ -1,10 +1,9 @@
-hangman_api_game_create:
+hangman_api_game_start:
     path:     /games
-    defaults: { _controller: HangmanApiBundle:HangmanGame:create }
+    defaults: { _controller: HangmanApiBundle:HangmanGame:start }
     methods:  [POST]
 
 hangman_api_game_guess:
     path:     /games
-    defaults: { _controller: HangmanApiBundle:HangmanGame:create }
+    defaults: { _controller: HangmanApiBundle:HangmanGame:guess }
     methods:  [PUT]
-    parameters:
