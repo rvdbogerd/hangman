@@ -24,7 +24,7 @@ class Word
     /**
      * @param string $word
      */
-    public function setWord($word)
+    public function __construct($word)
     {
         $this->word = $word;
     }
@@ -32,7 +32,7 @@ class Word
     /**
      * @return string
      */
-    public function getWord()
+    public function __toString()
     {
         return $this->word;
     }

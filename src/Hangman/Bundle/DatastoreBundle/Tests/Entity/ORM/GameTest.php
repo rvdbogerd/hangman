@@ -2,62 +2,36 @@
 namespace Hangman\Bundle\DatastoreBundle\Tests\Entity\ORM;
 
 use Hangman\Bundle\DatastoreBundle\Entity\ORM\Game;
+use Hangman\Bundle\DatastoreBundle\Entity\ORM\Word;
 use PHPUnit_Framework_TestCase;
 
 class GameTest extends PHPUnit_Framework_TestCase
 {
-    public function testIfDefaultStatusIsBusy()
+    public function testStartShouldCreateANewGameWithGivenWord()
     {
-        $entity = new Game();
+        $game = Game::start(new Word('awesome'));
 
-        $this->assertSame(
-            Game::STATUS_BUSY,
-            $entity->getStatus()
-        );
+        $this->assertSame('awesome', $game->getWord());
     }
 
-    public function testIfSuccessStatusIsAllowed()
+    public function testGuessingShouldChangeNumberOfTriesLeft()
     {
-        $entity = new Game();
-
-        $entity->setStatus(Game::STATUS_SUCCESS);
-
-        $this->assertSame(
-            Game::STATUS_SUCCESS,
-            $entity->getStatus()
-        );
+        $game = Game::start(new Word('awesome'));
+        $game->guess('a');
+        $this->assertSame(10, $game->numberOfTriesLeft());
     }
 
-    public function testIfBusyStatusIsAllowed()
+    public function testGuessingCorrectlyShouldResultInStatusSuccess()
     {
-        $entity = new Game();
+        $game = Game::start(new Word('awesome'));
+        $game->guess('a');
+        $game->guess('w');
+        $game->guess('e');
+        $game->guess('s');
+        $game->guess('o');
+        $game->guess('m');
 
-        $entity->setStatus(Game::STATUS_BUSY);
-
-        $this->assertSame(
-            Game::STATUS_BUSY,
-            $entity->getStatus()
-        );
+        $this->assertTrue($game->isFinished());
+        $this->assertTrue($game->wordIsGuessed());
     }
-
-    public function testIfFailedStatusIsAllowed()
-    {
-        $entity = new Game();
-        
-        $entity->setStatus(Game::STATUS_FAIL);
-
-        $this->assertSame(
-            Game::STATUS_FAIL,
-            $entity->getStatus()
-        );
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testIfInvalidStatusIsNotAllowed()
-    {
-        $entity = new Game();
-        $entity->setStatus('invalid');
-    }
-} 
+}

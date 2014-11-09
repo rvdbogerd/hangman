@@ -4,7 +4,6 @@ namespace Hangman\Bundle\DatastoreBundle\Entity\ORM;
 use InvalidArgumentException;
 use Doctrine\ORM\Mapping as ORM;
 
-
 /**
  * @ORM\Entity
  * @ORM\Table(name="game")
@@ -45,81 +44,27 @@ class Game
     protected $charactersGuessed = array();
 
     /**
+     * @param Word $word
+     */
+    protected function __construct(Word $word)
+    {
+        $this->word = (string) $word;
+    }
+
+    /**
      * @param $character
+     * @throws InvalidCharacterGuessedException
      */
-    public function addCharacterGuessed($character)
+    public function guess($character)
     {
-        if(!in_array($character, $this->charactersGuessed)) {
-            $this->charactersGuessed[] = $character;
+        if(in_array($character, $this->charactersGuessed)) {
+            throw new InvalidCharacterGuessedException('Character was already guessed, please try again.');
         }
-    }
 
-    /**
-     * @return mixed
-     */
-    public function getCharactersGuessed()
-    {
-        return $this->charactersGuessed;
-    }
+        $this->charactersGuessed[] = $character;
+        $this->triesLeft -= 1;
 
-    /**
-     * @param mixed $charactersGuessed
-     */
-    public function setCharactersGuessed($charactersGuessed)
-    {
-        $this->charactersGuessed = $charactersGuessed;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param mixed $status
-     * @throws InvalidArgumentException
-     */
-    public function setStatus($status)
-    {
-        if (!in_array($status, array(self::STATUS_BUSY, self::STATUS_FAIL, self::STATUS_SUCCESS))) {
-            throw new InvalidArgumentException("Invalid status");
-        }
-        $this->status = $status;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param integer $triesLeft
-     */
-    public function setTriesLeft($triesLeft)
-    {
-        $this->triesLeft = $triesLeft;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getTriesLeft()
-    {
-        return $this->triesLeft;
-    }
-
-    /**
-     * @param string $word
-     */
-    public function setWord($word)
-    {
-        $this->word = $word;
+        $this->updateStatusAfterGuessing();
     }
 
     /**
@@ -128,5 +73,60 @@ class Game
     public function getWord()
     {
         return $this->word;
+    }
+
+    /**
+     * @return integer
+     */
+    protected function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    protected function updateStatusAfterGuessing()
+    {
+        if ($this->wordIsGuessed()) {
+            $this->status = self::STATUS_SUCCESS;
+        }
+        if ($this->numberOfTriesLeft() === 0) {
+            $this->status = self::STATUS_FAIL;
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function wordIsGuessed()
+    {
+        //return $this->word->matchesGuessedCharacters($this->charactersGuessed);
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFinished()
+    {
+        return $this->status === self::STATUS_SUCCESS || $this->status === self::STATUS_FAIL;
+    }
+
+    /**
+     * @return integer
+     */
+    public function numberOfTriesLeft()
+    {
+        return $this->triesLeft;
+    }
+
+    /**
+     * @param Word $word
+     * @return Game
+     */
+    public static function start(Word $word)
+    {
+        return new static($word);
     }
 }
