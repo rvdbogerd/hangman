@@ -25,5 +25,5 @@ Vagrant.configure("2") do |config|
         ansible.limit = 'all'
     end
     
-    config.vm.synced_folder "./", "/vagrant", type: "nfs"
+    config.vm.synced_folder "./", "/sites/hangman", type: "nfs"
 end
