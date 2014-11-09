@@ -69,35 +69,6 @@ class Game
     }
 
     /**
-     * @return string
-     */
-    public function getWord()
-    {
-        return $this->word;
-    }
-
-    /**
-     * @return integer
-     */
-    protected function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     */
-    protected function updateStatusAfterGuessing()
-    {
-        if ($this->wordIsGuessed()) {
-            $this->status = self::STATUS_SUCCESS;
-        }
-        if ($this->numberOfTriesLeft() === 0) {
-            $this->status = self::STATUS_FAIL;
-        }
-    }
-
-    /**
      * @return mixed
      */
     public function wordIsGuessed()
@@ -129,5 +100,26 @@ class Game
     public static function start(Word $word)
     {
         return new static($word);
+    }
+
+    /**
+     * @return integer
+     */
+    protected function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    protected function updateStatusAfterGuessing()
+    {
+        if ($this->wordIsGuessed()) {
+            $this->status = self::STATUS_SUCCESS;
+        }
+        if ($this->numberOfTriesLeft() === 0) {
+            $this->status = self::STATUS_FAIL;
+        }
     }
 }

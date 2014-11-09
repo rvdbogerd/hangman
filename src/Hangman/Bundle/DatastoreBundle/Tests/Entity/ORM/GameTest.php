@@ -11,7 +11,7 @@ class GameTest extends PHPUnit_Framework_TestCase
     {
         $game = Game::start(new Word('awesome'));
 
-        $this->assertSame('awesome', $game->getWord());
+        $this->assertSame('awesome', \PHPUnit_Framework_Assert::readAttribute($game, 'word'));
     }
 
     public function testGuessingShouldChangeNumberOfTriesLeft()
