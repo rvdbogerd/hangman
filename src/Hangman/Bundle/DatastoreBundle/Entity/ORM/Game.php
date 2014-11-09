@@ -27,7 +27,7 @@ class Game
     /**
      * @ORM\Column(name="tries_left", type="integer")
      */
-    protected $tries_left = 11;
+    protected $triesLeft = 11;
 
     /**
      * @ORM\Column(name="word", type="string")
@@ -80,6 +80,7 @@ class Game
 
     /**
      * @param mixed $status
+     * @throws InvalidArgumentException
      */
     public function setStatus($status)
     {
@@ -98,11 +99,11 @@ class Game
     }
 
     /**
-     * @param integer $tries_left
+     * @param integer $triesLeft
      */
-    public function setTriesLeft($tries_left)
+    public function setTriesLeft($triesLeft)
     {
-        $this->tries_left = $tries_left;
+        $this->triesLeft = $triesLeft;
     }
 
     /**
@@ -110,7 +111,7 @@ class Game
      */
     public function getTriesLeft()
     {
-        return $this->tries_left;
+        return $this->triesLeft;
     }
 
     /**
