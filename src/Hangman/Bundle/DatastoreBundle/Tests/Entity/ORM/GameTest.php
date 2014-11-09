@@ -34,4 +34,12 @@ class GameTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($game->isFinished());
         $this->assertTrue($game->wordIsGuessed());
     }
+
+    public function testGuessingCharacterTwiceResultsInException() {
+        $this->setExpectedException('Hangman\Bundle\DatastoreBundle\Exception\InvalidCharacterGuessedException');
+
+        $game = Game::start(new Word('awesome'));
+        $game->guess('a');
+        $game->guess('a');
+    }
 }
