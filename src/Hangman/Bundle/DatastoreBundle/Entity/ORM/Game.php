@@ -1,6 +1,7 @@
 <?php
 namespace Hangman\Bundle\DatastoreBundle\Entity\ORM;
 
+use Hangman\Bundle\DatastoreBundle\Exception\InvalidCharacterGuessedException;
 use InvalidArgumentException;
 use Doctrine\ORM\Mapping as ORM;
 
