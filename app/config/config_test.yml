@@ -7,9 +7,9 @@ framework:
         storage_id: session.storage.mock_file
     profiler:
         collect: false
-
-liip_functional_test:
-    cache_sqlite_db: true
+#
+#liip_functional_test:
+#    cache_sqlite_db: true
 
 doctrine:
     dbal:
