@@ -1,0 +1,5 @@
+services:
+  hangman_game.game_service:
+      class: Hangman\Bundle\GameBundle\Service\GameService
+      arguments:
+          - @doctrine

@@ -4,8 +4,8 @@
 namespace Hangman\Bundle\ApiBundle\Tests\Controller;
 
 use Hangman\Bundle\ApiBundle\Controller\HangmanGameController;
+use Hangman\Bundle\DatastoreBundle\Entity\ORM\Game;
 use Hangman\Bundle\DatastoreBundle\Entity\ORM\Word;
-use Hangman\Bundle\DatastoreBundle\Repository\ORM\WordRepository;
 
 /**
  * Class HangmanGameControllerTest
@@ -17,7 +17,7 @@ class HangmanGameControllerTest extends \PHPUnit_Framework_TestCase
 {
     public function testStartGameShouldReturnJsonResponse()
     {
-        $controller = new HangmanGameController($this->getWordRepositoryMock());
+        $controller = new HangmanGameController($this->getGameServiceMock());
         $response = $controller->startAction();
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\JsonResponse', $response);
@@ -29,7 +29,7 @@ class HangmanGameControllerTest extends \PHPUnit_Framework_TestCase
 
     public function testGuessShouldReturnJsonResponse()
     {
-        $controller = new HangmanGameController($this->getWordRepositoryMock());
+        $controller = new HangmanGameController($this->getGameServiceMock());
         $response = $controller->guessAction(1);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\JsonResponse', $response);
@@ -39,14 +39,16 @@ class HangmanGameControllerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    protected function getWordRepositoryMock()
+    protected function getGameServiceMock()
     {
-        $mock = $this->getMockBuilder('Hangman\Bundle\DatastoreBundle\Repository\ORM\WordRepository')
+        $mock = $this->getMockBuilder('Hangman\Bundle\GameBundle\Service\GameService')
             ->disableOriginalConstructor()
             ->getMock();
+
+        $game = Game::start(new Word('awesome'));
         $mock->expects($this->once())
-            ->method('getRandomWord')
-            ->willReturn(new Word('awesome'));
+            ->method('startNewGame')
+            ->will($this->returnValue($game));
 
         return $mock;
     }

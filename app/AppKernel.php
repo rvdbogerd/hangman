@@ -17,6 +17,7 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Hangman\Bundle\ApiBundle\HangmanApiBundle(),
             new Hangman\Bundle\DatastoreBundle\HangmanDatastoreBundle(),
+            new Hangman\Bundle\GameBundle\HangmanGameBundle()
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
