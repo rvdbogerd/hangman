@@ -9,4 +9,5 @@ hangman_api_game_guess:
     methods:  [PUT]
     requirements:
         gameId:  \d+
+        character: \w{1}
 

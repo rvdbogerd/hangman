@@ -5,6 +5,7 @@ namespace Hangman\Bundle\ApiBundle\Controller;
 use Hangman\Bundle\GameBundle\Service\GameService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class HangmanGameController
 {
@@ -33,17 +34,18 @@ class HangmanGameController
 
     /**
      * @param integer $gameId
-     * @return Response
+     * @param string $character
+     * @return JsonResponse
+     * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
      */
-    public function guessAction($gameId)
+    public function guessAction($gameId, $character)
     {
-        // find game by id
-        $game = $this->gameService->startNewGame();
-        // call guess() method
-
-        // handle exceptions
-
-        //return json response
-        return new JsonResponse($game->toDto());
+        try {
+            return new JsonResponse(
+                $this->gameService->guess($gameId, $character)
+            );
+        } catch (\InvalidArgumentException $exception) {
+            throw new BadRequestHttpException();
+        }
     }
 }

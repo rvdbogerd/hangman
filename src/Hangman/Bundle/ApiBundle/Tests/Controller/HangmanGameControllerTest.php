@@ -30,11 +30,11 @@ class HangmanGameControllerTest extends \PHPUnit_Framework_TestCase
     public function testGuessShouldReturnJsonResponse()
     {
         $controller = new HangmanGameController($this->getGameServiceMock());
-        $response = $controller->guessAction(1);
+        $response = $controller->guessAction(1, 'a');
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\JsonResponse', $response);
         $this->assertJsonStringEqualsJsonString(
-            '{"word":".......","status":"busy","tries_left":10}',
+            '{"word":".......","status":"busy","tries_left":11}',
             $response->getContent()
         );
     }

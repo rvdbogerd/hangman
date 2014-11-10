@@ -2,6 +2,7 @@
 
 namespace Hangman\Bundle\GameBundle\Tests;
 
+use Hangman\Bundle\DatastoreBundle\Entity\ORM\Game;
 use Hangman\Bundle\DatastoreBundle\Entity\ORM\Word;
 use Hangman\Bundle\GameBundle\Service\GameService;
 
@@ -13,7 +14,7 @@ use Hangman\Bundle\GameBundle\Service\GameService;
  */
 class GameServiceTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCreateNewGameStoresNewGame()
+    public function testCreateNewGameShouldStoreNewGame()
     {
         $service = new GameService(
             $this->getObjectManagerMock(),
@@ -23,10 +24,35 @@ class GameServiceTest extends \PHPUnit_Framework_TestCase
         $service->startNewGame();
     }
 
+    public function testGuessingShouldUpdateGame()
+    {
+        $service = new GameService(
+            $this->getObjectManagerMock(),
+            $this->getWordRepositoryMock()
+        );
+        $gameData = $service->guess(1, 'a');
+        $this->assertInstanceOf('Hangman\Bundle\DatastoreBundle\DTO\GameData', $gameData);
+        $this->assertAttributeSame(10, 'tries_left', $gameData);
+    }
+
+    public function testGuessingWithInvalidCharacterThrowsException()
+    {
+        $service = new GameService(
+            $this->getObjectManagerMock(),
+            $this->getWordRepositoryMock()
+        );
+        $service->guess(1, 'asdfa');
+    }
+
     protected function getObjectManagerMock()
     {
         $mock = $this->getMockBuilder('Doctrine\Common\Persistence\ObjectManager')
             ->getMock();
+
+        $mock->expects($this->once())
+            ->method('persist');
+        $mock->expects($this->once())
+            ->method('flush');
 
         return $mock;
     }
