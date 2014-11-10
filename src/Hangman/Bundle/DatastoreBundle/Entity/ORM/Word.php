@@ -50,4 +50,22 @@ class Word
         }
         return true;
     }
+
+    /**
+     * @param array $characters
+     * @return string
+     */
+    public function withOnlyGuessedCharacters(array $characters)
+    {
+        $word = '';
+        foreach (str_split($this->word) as $wordCharacter) {
+            if (!in_array($wordCharacter, $characters)) {
+                $word .= '.';
+                continue;
+            }
+
+            $word .= $wordCharacter;
+        }
+        return $word;
+    }
 }

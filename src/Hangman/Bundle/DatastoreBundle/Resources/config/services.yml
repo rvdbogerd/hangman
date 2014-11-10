@@ -1,4 +1,7 @@
 services:
-#    hangman_datastore.example:
-#        class: Hangman\Bundle\DatastoreBundle\Example
-#        arguments: [@service_id, "plain_value", %parameter%]
+    hangman_datastore.word_repository:
+        class: Hangman\Bundle\DatastoreBundle\Repository\ORM\WordRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - Hangman\Bundle\DatastoreBundle\Entity\ORM\Word

@@ -1,6 +1,7 @@
 <?php
 namespace Hangman\Bundle\DatastoreBundle\Entity\ORM;
 
+use Hangman\Bundle\DatastoreBundle\DTO\GameData;
 use Hangman\Bundle\DatastoreBundle\Exception\InvalidCharacterGuessedException;
 use InvalidArgumentException;
 use Doctrine\ORM\Mapping as ORM;
@@ -131,5 +132,17 @@ class Game
         if ($this->numberOfTriesLeft() === 0) {
             $this->status = self::STATUS_FAIL;
         }
+    }
+
+    /**
+     * @return GameData
+     */
+    public function toDto()
+    {
+        return new GameData(
+            $this->triesLeft,
+            $this->status,
+            $this->getWord()->withOnlyGuessedCharacters($this->charactersGuessed)
+        );
     }
 }

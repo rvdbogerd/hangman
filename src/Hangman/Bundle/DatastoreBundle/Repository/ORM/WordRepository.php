@@ -3,12 +3,14 @@ namespace Hangman\Bundle\DatastoreBundle\Repository\ORM;
 
 use RuntimeException;
 use Doctrine\ORM\EntityRepository;
+use Hangman\Bundle\DatastoreBundle\Entity\ORM\Word;
 
 class WordRepository extends EntityRepository
 {
 
     /**
-     * @return array
+     * @return Word
+     * @throws \RuntimeException
      */
     public function getRandomWord()
     {
@@ -29,6 +31,6 @@ class WordRepository extends EntityRepository
             throw new RuntimeException('No words available');
         }
 
-        return $result['word'];
+        return $this->findOneByWord($result['word']);
     }
 }

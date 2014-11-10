@@ -1,6 +1,8 @@
 <?php
 namespace Hangman\Bundle\DatastoreBundle\Tests\Repository\ORM;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Hangman\Bundle\DatastoreBundle\Entity\ORM\Word;
 use PHPUnit_Framework_TestCase;
 use Hangman\Bundle\DatastoreBundle\Repository\ORM\WordRepository;
 
@@ -26,18 +28,42 @@ class WordRepositoryTest extends PHPUnit_Framework_TestCase
 
     public function testRandomWordReturned()
     {
-        $repository = new WordRepository(
-            $this->getEntityManagerMock(),
-            $this->getClassMetadataMock()
-        );
+        $repository = $this->getRepositoryStub();
 
         $this->assertEquals(
-            $repository->getRandomWord(),
             $this->expectedWord,
+            $repository->getRandomWord(),
             'Word does not match the expected result'
         );
     }
 
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected function getRepositoryStub()
+    {
+        $stub = $this->getMockBuilder('Hangman\Bundle\DatastoreBundle\Repository\ORM\WordRepository')
+            ->setConstructorArgs([
+                    $this->getEntityManagerMock(),
+                    $this->getClassMetadataMock()
+                ]
+            )
+            ->setMethods(['findOneByWord'])
+            ->getMock();
+
+        $stub->expects($this->once())
+            ->method('findOneByWord')
+            ->with($this->expectedWord)
+            ->will($this->returnValue(
+                new Word($this->expectedWord))
+            );
+
+        return $stub;
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
     protected function getClassMetadataMock()
     {
         return $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadata')
@@ -102,4 +128,4 @@ class WordRepositoryTest extends PHPUnit_Framework_TestCase
 
         return $mock;
     }
-} 
+}

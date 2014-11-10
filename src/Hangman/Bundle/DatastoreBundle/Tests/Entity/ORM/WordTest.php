@@ -18,4 +18,10 @@ class WordTest extends PHPUnit_Framework_TestCase
         $word = new Word('awesome');
         $this->assertFalse($word->matchesGuessedCharacters(['a', 'w']));
     }
+
+    public function testUnmatchedCharactersShouldBeHidden()
+    {
+        $word = new Word('awesome');
+        $this->assertSame('a...o..', $word->withOnlyGuessedCharacters(['a', 'o']));
+    }
 }
