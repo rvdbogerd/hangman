@@ -3,21 +3,31 @@
 namespace Hangman\Bundle\ApiBundle\Controller;
 
 use Hangman\Bundle\DatastoreBundle\Entity\ORM\Game;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Hangman\Bundle\DatastoreBundle\Repository\ORM\WordRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class HangmanGameController extends Controller
+class HangmanGameController
 {
+    /**
+     * @var WordRepository
+     */
+    private $wordRepository;
+
+    /**
+     * @param WordRepository $wordRepository
+     */
+    public function __construct(WordRepository $wordRepository)
+    {
+        $this->wordRepository = $wordRepository;
+    }
+    
     /**
      * @return Response
      */
     public function startAction()
     {
-        $game = Game::start(
-            $this->container->get('hangman_datastore.word_repository')
-                ->getRandomWord()
-        );
+        $game = Game::start($this->wordRepository->getRandomWord());
 
         // Save game
 
@@ -31,7 +41,7 @@ class HangmanGameController extends Controller
     public function guessAction($gameId)
     {
         // find game by id
-
+        $game = Game::start($this->wordRepository->getRandomWord());
         // call guess() method
 
         // handle exceptions

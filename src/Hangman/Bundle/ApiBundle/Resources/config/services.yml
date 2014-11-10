@@ -1,0 +1,5 @@
+services:
+    hangman_api.game.controller:
+        class: "Hangman\Bundle\ApiBundle\Controller\HangmanGameController"
+        arguments:
+            - @hangman_datastore.word_repository

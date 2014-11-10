@@ -1,11 +1,11 @@
 hangman_api_game_start:
     path:     /games
-    defaults: { _controller: HangmanApiBundle:HangmanGame:start }
+    defaults: { _controller: hangman_api.game.controller:startAction }
     methods:  [POST]
 
 hangman_api_game_guess:
     path:     /games/{gameId}
-    defaults: { _controller: HangmanApiBundle:HangmanGame:guess }
+    defaults: { _controller: hangman_api.game.controller:guessAction }
     methods:  [PUT]
     requirements:
         gameId:  \d+
