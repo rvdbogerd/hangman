@@ -44,16 +44,8 @@ class HangmanGameController
         return new JsonResponse(
             $gameData,
             201,
-            ['Location' => $this->router->generate('hangman_api_game', ['gameId' => $gameData->id])]
+            ['Location' => $this->router->generate('hangman_api_game_guess', ['gameId' => $gameData->id])]
         );
-    }
-
-    /**
-     * @return Response
-     */
-    public function viewAction()
-    {
-        return new JsonResponse($this->gameService->startNewGame());
     }
 
     /**

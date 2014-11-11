@@ -3,13 +3,6 @@ hangman_api_game_start:
     defaults: { _controller: hangman_api.game.controller:startAction }
     methods:  [POST]
 
-hangman_api_game:
-    path:     /games/{gameId}
-    defaults: { _controller: hangman_api.game.controller:viewAction }
-    methods:  [GET]
-    requirements:
-        gameId:  \d+
-
 hangman_api_game_guess:
     path:     /games/{gameId}
     defaults: { _controller: hangman_api.game.controller:guessAction }
