@@ -66,14 +66,9 @@ class GameService
      * @param integer $gameId
      * @param string $character
      * @return \Hangman\Bundle\DatastoreBundle\DTO\GameData
-     * @throws \InvalidArgumentException
      */
     public function guess($gameId, $character)
     {
-        if (!is_string($character) || strlen($character) <> 1) {
-            throw new InvalidCharacterGuessedException($character . ' is not a valid character');
-        }
-
         $game = $this->findGame((int) $gameId);
         $game->guess($character);
         $this->saveGame($game);

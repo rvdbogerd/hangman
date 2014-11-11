@@ -51,19 +51,8 @@ class GameServiceTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectPersistCalls();
 
-        $this->gameRepositoryMock
-            ->expects($this->once())
-            ->method('find')
-            ->willReturn(Game::start(new Word('awesome')));
-
         $gameData = $this->gameService->guess(1, 'a');
         $this->assertInstanceOf('Hangman\Bundle\DatastoreBundle\DTO\GameData', $gameData);
-    }
-
-    public function testGuessingWithInvalidCharacterThrowsException()
-    {
-        $this->setExpectedException('Hangman\Bundle\DatastoreBundle\Exception\InvalidCharacterGuessedException');
-        $this->gameService->guess(1, 'asdfa');
     }
 
     protected function getPersistenceManagerMock()
@@ -88,6 +77,11 @@ class GameServiceTest extends \PHPUnit_Framework_TestCase
         $mock = $this->getMockBuilder('Doctrine\ORM\EntityRepository')
             ->disableOriginalConstructor()
             ->getMock();
+
+        $mock
+            ->expects($this->any())
+            ->method('find')
+            ->willReturn(Game::start(new Word('awesome')));
 
         return $mock;
     }

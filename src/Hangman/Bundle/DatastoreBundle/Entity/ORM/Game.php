@@ -79,6 +79,10 @@ class Game
             throw new InvalidCharacterGuessedException('Character was already guessed, please try again.');
         }
 
+        if (!preg_match('#^[a-z]{1}$#', $character)) {
+            throw new InvalidCharacterGuessedException($character . ' is not a valid character');
+        }
+
         $this->charactersGuessed[] = $character;
         $this->updateStatusAfterGuessing($character);
 

@@ -78,4 +78,10 @@ class GameTest extends PHPUnit_Framework_TestCase
             ->guess('a')
             ->guess('a');
     }
+
+    public function testGuessingWithInvalidCharacterThrowsException()
+    {
+        $this->setExpectedException('Hangman\Bundle\DatastoreBundle\Exception\InvalidCharacterGuessedException');
+        Game::start(new Word('awesome'))->guess('asdfa');
+    }
 }
