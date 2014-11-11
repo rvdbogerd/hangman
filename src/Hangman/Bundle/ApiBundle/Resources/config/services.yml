@@ -3,3 +3,4 @@ services:
         class: "Hangman\Bundle\ApiBundle\Controller\HangmanGameController"
         arguments:
             - @hangman_game.game_service
+            - @router
