@@ -7,24 +7,24 @@ but hey, now my fellow developers will get it for free. That is, if this was a r
 
 ## Project setup ##
 
-* Check out the repository
+Check out the repository
 ```
 git clone git@github.com:rvdbogerd/hangman.git
 ```
 
-* Run composer install
+Run composer install
 ```
 composer install
 ```
 
 ## Webserver option 1: Vagrant ##
-* Install vagrant
-* Run vagrant up
+Install vagrant
+Run vagrant up
 ```
 vagrant up --provision
 ```
 
-* Point your local hosts file to the vm by adding the hangman url
+Point your local hosts file to the vm by adding the hangman url
 ```
 192.168.33.60   hangman.local.dev
 192.168.33.60   www.hangman.local.dev
@@ -35,28 +35,33 @@ Just set up a local database, add your credentials to parameters.yml and boot yo
 
 ## DB Migrations ##
 
-* run database migrations
+run database migrations
 ```
 $ php app/console doctrine:database:create
 $ php app/console doctrine:migrations:migrate
 ```
 
 ## Start testing ##
-* Now you can start testing the API by pointing your testing tool (e.g. Postman) to hangman.local.dev/games
+Now you can start testing the API by pointing your testing tool (e.g. Postman) to hangman.local.dev/games
 
-Create new game:
-URI: hangman.local.dev/games
-Method: POST 
-Response content: game data in json format
-Response headers: Location header contains the new resource location.
+### Create new game: ###
+* URI: hangman.local.dev/games
+* Method: POST 
+* Response content: game data in json format
+* Response headers: Location header contains the new resource location.
 
-Start guessing characters on existing game:
-URI: hangman.local.dev/games/{id}
-Method: PUT 
-Parameters: 'character' => single alpha character
-Request Headers: should contain Content-Type header, can be one of `application/json` or `application/x-www-form-urlencoded`
-Response content: game data in json format
+### Start guessing characters on existing game: ###
+* URI: hangman.local.dev/games/{id}
+* Method: PUT 
+* Parameters: 'character' => single alpha character
+* Request Headers: should contain Content-Type header, can be one of `application/json` or `application/x-www-form-urlencoded`
+* Response content: game data in json format
 
+## TODO ##
+
+Although I tried my best with delivering clean, well-tested code, within the amount of time available, there's still some stuff I would like to improve:
+
+* Add a Listener which converts all exceptions to valid json output, it's quite annoying if you hit the same character twice and you get this blob of html with error output from the debugger. Would be nice to just have something like an error property in the json response object. If I had more time, I'd add it!
 
 
 # ASSIGNMENT AS PROVIDED #
