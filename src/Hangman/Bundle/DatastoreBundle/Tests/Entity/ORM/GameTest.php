@@ -17,8 +17,22 @@ class GameTest extends PHPUnit_Framework_TestCase
     public function testGuessingShouldChangeNumberOfTriesLeft()
     {
         $game = Game::start(new Word('awesome'));
+        $game->guess('x');
+        $this->assertSame(10, $game->toDto()->tries_left);
+    }
+
+    public function testGuessingShouldNotChangeNumberOfTriesLeft()
+    {
+        $game = Game::start(new Word('awesome'));
         $game->guess('a');
-        $this->assertSame(10, $game->numberOfTriesLeft());
+        $this->assertSame(11, $game->toDto()->tries_left);
+    }
+
+    public function testGuessingShouldExposeMatchedCharacters()
+    {
+        $game = Game::start(new Word('awesome'));
+        $game->guess('e');
+        $this->assertSame('..e...e', $game->toDto()->word);
     }
 
     public function testGuessingCorrectlyShouldResultInStatusSuccess()
@@ -31,8 +45,9 @@ class GameTest extends PHPUnit_Framework_TestCase
             ->guess('o')
             ->guess('m');
 
-        $this->assertTrue($game->isFinished());
-        $this->assertTrue($game->wordIsGuessed());
+        $gameData = $game->toDto();
+        $this->assertSame(Game::STATUS_SUCCESS, $gameData->status);
+        $this->assertSame(11, $gameData->tries_left);
     }
 
     public function testTooManyWrongGuessesShouldResultInStatusFailed()
@@ -50,8 +65,9 @@ class GameTest extends PHPUnit_Framework_TestCase
             ->guess('g')
             ->guess('h');
 
-        $this->assertTrue($game->isFinished());
-        $this->assertFalse($game->wordIsGuessed());
+        $gameData = $game->toDto();
+        $this->assertSame(Game::STATUS_FAIL, $gameData->status);
+        $this->assertSame(0, $gameData->tries_left);
     }
 
     public function testGuessingCharacterTwiceResultsInException() {

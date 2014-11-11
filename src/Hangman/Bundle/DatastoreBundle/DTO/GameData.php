@@ -31,9 +31,10 @@ class GameData
     public $tries_left;
 
     /**
-     * @param $triesLeft
-     * @param $status
-     * @param $word
+     * @param integer $triesLeft
+     * @param string $status one of busy|fail|success
+     * @param string $word
+     * @param
      */
     public function __construct($triesLeft, $status, $word)
     {

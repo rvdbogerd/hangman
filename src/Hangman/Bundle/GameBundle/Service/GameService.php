@@ -1,14 +1,20 @@
 <?php
 
-
 namespace Hangman\Bundle\GameBundle\Service;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\Persistence\ObjectRepository;
 use Hangman\Bundle\DatastoreBundle\Entity\ORM\Game;
+use Hangman\Bundle\DatastoreBundle\Exception\InvalidCharacterGuessedException;
 use Hangman\Bundle\DatastoreBundle\Repository\ORM\WordRepository;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 /**
- * Class GameService
+ * Class GameService can be considered a Façade for the domain model and
+ * persistence of the Game logic and flow. It's used for mapping game in-/output
+ * from controller to model and back. In between, it persists any changes to the
+ * persistence manager.
+ *
  * @package Hangman\Bundle\GameBundle\Service
  *
  * @author Robbert van den Bogerd <rvdbogerd@ibuildings.nl>
@@ -16,25 +22,33 @@ use Hangman\Bundle\DatastoreBundle\Repository\ORM\WordRepository;
 class GameService
 {
     /**
-     * @var \Doctrine\Common\Persistence\ObjectManager
+     * @var ObjectManager
      */
-    private $entityManager;
+    private $persistenceManager;
 
     /**
-     * @var \Hangman\Bundle\DatastoreBundle\Repository\ORM\WordRepository
+     * @var WordRepository
      */
     private $wordRepository;
 
     /**
-     * @param ObjectManager $entityManager
+     * @var ObjectRepository
+     */
+    private $gameRepository;
+
+    /**
+     * @param ObjectManager $persistenceManager
      * @param WordRepository $wordRepository
+     * @param ObjectRepository $gameRepository
      */
     public function __construct(
-        ObjectManager $entityManager,
-        WordRepository $wordRepository
+        ObjectManager $persistenceManager,
+        WordRepository $wordRepository,
+        ObjectRepository $gameRepository
     ) {
-        $this->entityManager = $entityManager;
+        $this->persistenceManager = $persistenceManager;
         $this->wordRepository = $wordRepository;
+        $this->gameRepository = $gameRepository;
     }
 
     /**
@@ -43,34 +57,34 @@ class GameService
     public function startNewGame()
     {
         $game = Game::start($this->wordRepository->getRandomWord());
-
         $this->saveGame($game);
-
-        return $game->toDto();
-    }
-
-
-    /**
-     * @param $gameId
-     * @param $character
-     * @return \Hangman\Bundle\DatastoreBundle\DTO\GameData
-     * @throws \InvalidArgumentException
-     */
-    public function guess($gameId, $character)
-    {
-        if (!is_string($character) || strlen($character) <> 1) {
-            throw new \InvalidArgumentException($character . ' is not a valid character');
-        }
-
-        $game = $this->findGame($gameId);
-        $game->guess($character);
 
         return $game->toDto();
     }
 
     /**
      * @param integer $gameId
+     * @param string $character
+     * @return \Hangman\Bundle\DatastoreBundle\DTO\GameData
+     * @throws \InvalidArgumentException
+     */
+    public function guess($gameId, $character)
+    {
+        if (!is_string($character) || strlen($character) <> 1) {
+            throw new InvalidCharacterGuessedException($character . ' is not a valid character');
+        }
+
+        $game = $this->findGame((int) $gameId);
+        $game->guess($character);
+        $this->saveGame($game);
+
+        return $game->toDto();
+    }
+
+    /**
+     * @param $gameId
      * @return Game
+     * @throws \Symfony\Component\Routing\Exception\ResourceNotFoundException
      * @throws \InvalidArgumentException
      */
     private function findGame($gameId)
@@ -79,10 +93,9 @@ class GameService
             throw new \InvalidArgumentException($gameId . ' is not an integer');
         }
 
-        $game = $this->entityManager->getRepository('Hangman\Bundle\DatastoreBundle\Entity\ORM\Game')
-            ->find($gameId);
+        $game = $this->gameRepository->find($gameId);
         if (!$game instanceof Game) {
-            throw new \InvalidArgumentException('Game with id ' . $gameId . ' does not exist');
+            throw new ResourceNotFoundException('Game with id ' . $gameId . ' does not exist');
         }
 
         return $game;
@@ -93,7 +106,7 @@ class GameService
      */
     private function saveGame(Game $game)
     {
-        $this->entityManager->persist($game);
-        $this->entityManager->flush();
+        $this->persistenceManager->persist($game);
+        $this->persistenceManager->flush();
     }
 }

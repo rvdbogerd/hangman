@@ -38,13 +38,13 @@ class Word
     }
 
     /**
-     * @param array $characters
+     * @param array $guessedCharacters
      * @return bool
      */
-    public function matchesGuessedCharacters(array $characters)
+    public function matchesGuessedCharacters(array $guessedCharacters)
     {
         foreach (str_split($this->word) as $wordCharacter) {
-            if (!in_array($wordCharacter, $characters)) {
+            if (!in_array($wordCharacter, $guessedCharacters)) {
                 return false;
             }
         }
@@ -67,5 +67,16 @@ class Word
             $word .= $wordCharacter;
         }
         return $word;
+    }
+
+    /**
+     * Checks if the word contains a specific character
+     *
+     * @param $character
+     * @return bool
+     */
+    public function contains($character)
+    {
+        return strpos($this->word, $character) !== false;
     }
 }

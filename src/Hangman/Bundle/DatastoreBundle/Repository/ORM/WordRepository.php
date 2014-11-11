@@ -7,7 +7,6 @@ use Hangman\Bundle\DatastoreBundle\Entity\ORM\Word;
 
 class WordRepository extends EntityRepository
 {
-
     /**
      * @return Word
      * @throws \RuntimeException

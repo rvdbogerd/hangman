@@ -2,6 +2,7 @@
 namespace Hangman\Bundle\DatastoreBundle\Entity\ORM;
 
 use Hangman\Bundle\DatastoreBundle\DTO\GameData;
+use Hangman\Bundle\DatastoreBundle\Exception\GameAlreadyFinishedException;
 use Hangman\Bundle\DatastoreBundle\Exception\InvalidCharacterGuessedException;
 use InvalidArgumentException;
 use Doctrine\ORM\Mapping as ORM;
@@ -54,20 +55,32 @@ class Game
     }
 
     /**
+     * @param Word $word
+     * @return Game
+     */
+    public static function start(Word $word)
+    {
+        return new static($word);
+    }
+
+    /**
      * @param $character
      * @throws InvalidCharacterGuessedException
+     * @throws GameAlreadyFinishedException
      * @return $this
      */
     public function guess($character)
     {
+        if ($this->isFinished()) {
+            throw new GameAlreadyFinishedException('Game already finished, please start a new game');
+        }
+
         if (in_array($character, $this->charactersGuessed)) {
             throw new InvalidCharacterGuessedException('Character was already guessed, please try again.');
         }
 
         $this->charactersGuessed[] = $character;
-        $this->triesLeft -= 1;
-
-        $this->updateStatusAfterGuessing();
+        $this->updateStatusAfterGuessing($character);
 
         return $this;
     }
@@ -75,15 +88,15 @@ class Game
     /**
      * @return boolean
      */
-    public function wordIsGuessed()
+    protected function isWordGuessed()
     {
         return $this->getWord()->matchesGuessedCharacters($this->charactersGuessed);
     }
 
     /**
-     * @return bool
+     * @return boolean
      */
-    public function isFinished()
+    protected function isFinished()
     {
         return $this->status === self::STATUS_SUCCESS || $this->status === self::STATUS_FAIL;
     }
@@ -91,18 +104,9 @@ class Game
     /**
      * @return integer
      */
-    public function numberOfTriesLeft()
+    protected function numberOfTriesLeft()
     {
         return $this->triesLeft;
-    }
-
-    /**
-     * @param Word $word
-     * @return Game
-     */
-    public static function start(Word $word)
-    {
-        return new static($word);
     }
 
     /**
@@ -122,11 +126,15 @@ class Game
     }
 
     /**
-     * @throws InvalidArgumentException
+     * @param string $character
      */
-    protected function updateStatusAfterGuessing()
+    protected function updateStatusAfterGuessing($character)
     {
-        if ($this->wordIsGuessed()) {
+        if (!$this->getWord()->contains($character)) {
+            $this->triesLeft -= 1;
+        }
+
+        if ($this->isWordGuessed()) {
             $this->status = self::STATUS_SUCCESS;
         }
         if ($this->numberOfTriesLeft() === 0) {

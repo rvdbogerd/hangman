@@ -24,4 +24,18 @@ class WordTest extends PHPUnit_Framework_TestCase
         $word = new Word('awesome');
         $this->assertSame('a...o..', $word->withOnlyGuessedCharacters(['a', 'o']));
     }
+
+    public function testWordContainsCharacter()
+    {
+        $word = new Word('awesome');
+        $this->assertTrue($word->contains('s'));
+        // Just to be sure, test that position 0 does not match false check
+        $this->assertTrue($word->contains('a'));
+    }
+
+    public function testWordDoesNotContainCharacter()
+    {
+        $word = new Word('awesome');
+        $this->assertFalse($word->contains('x'));
+    }
 }
