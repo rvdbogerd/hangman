@@ -62,6 +62,9 @@ Now you can start testing the API by pointing your testing tool (e.g. Postman) t
 Although I tried my best with delivering clean, well-tested code, within the amount of time available, there's still some stuff I would like to improve:
 
 * Add a Listener which converts all exceptions to valid json output, it's quite annoying if you hit the same character twice and you get this blob of html with error output from the debugger. Would be nice to just have something like an error property in the json response object. If I had more time, I'd add it!
+* Add functional controller tests. I experimented a bit with the Controller, by trying to let it have no symfony "magic" at all. Therefore I removed the container dependency and the baseclass extend, and tried to fully unit test the controller actions. Altough I succeeded in doing so and it made the controller more decoupled I'd prefer to add webtest cases instead of unit tests for the controller, because my unit tests seem to be a bit hard to maintain.
+
+
 
 
 # ASSIGNMENT AS PROVIDED #
