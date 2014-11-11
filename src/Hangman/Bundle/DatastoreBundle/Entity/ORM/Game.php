@@ -4,7 +4,6 @@ namespace Hangman\Bundle\DatastoreBundle\Entity\ORM;
 use Hangman\Bundle\DatastoreBundle\DTO\GameData;
 use Hangman\Bundle\DatastoreBundle\Exception\GameAlreadyFinishedException;
 use Hangman\Bundle\DatastoreBundle\Exception\InvalidCharacterGuessedException;
-use InvalidArgumentException;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -24,32 +23,32 @@ class Game
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
+    private $id;
 
     /**
      * @ORM\Column(name="tries_left", type="integer")
      */
-    protected $triesLeft = 11;
+    private $triesLeft = 11;
 
     /**
      * @ORM\Column(name="word", type="string")
      */
-    protected $word;
+    private $word;
 
     /**
      * @ORM\Column(name="status", type="string")
      */
-    protected $status = self::STATUS_BUSY;
+    private $status = self::STATUS_BUSY;
 
     /**
      * @ORM\Column(name="characters_guessed", type="json_array")
      */
-    protected $charactersGuessed = array();
+    private $charactersGuessed = array();
 
     /**
      * @param Word $word
      */
-    protected function __construct(Word $word)
+    private function __construct(Word $word)
     {
         $this->word = (string) $word;
     }
@@ -92,7 +91,7 @@ class Game
     /**
      * @return boolean
      */
-    protected function isWordGuessed()
+    private function isWordGuessed()
     {
         return $this->getWord()->matchesGuessedCharacters($this->charactersGuessed);
     }
@@ -100,7 +99,7 @@ class Game
     /**
      * @return boolean
      */
-    protected function isFinished()
+    private function isFinished()
     {
         return $this->status === self::STATUS_SUCCESS || $this->status === self::STATUS_FAIL;
     }
@@ -108,7 +107,7 @@ class Game
     /**
      * @return integer
      */
-    protected function numberOfTriesLeft()
+    private function numberOfTriesLeft()
     {
         return $this->triesLeft;
     }
@@ -116,7 +115,7 @@ class Game
     /**
      * @return integer
      */
-    protected function getId()
+    private function getId()
     {
         return $this->id;
     }
@@ -124,7 +123,7 @@ class Game
     /**
      * @return Word
      */
-    protected function getWord()
+    private function getWord()
     {
         return new Word($this->word);
     }
@@ -132,7 +131,7 @@ class Game
     /**
      * @param string $character
      */
-    protected function updateStatusAfterGuessing($character)
+    private function updateStatusAfterGuessing($character)
     {
         if (!$this->getWord()->contains($character)) {
             $this->triesLeft -= 1;
