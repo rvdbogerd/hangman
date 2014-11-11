@@ -63,6 +63,13 @@ class Game
     }
 
     /**
+     * Method for guessing a single character of the word:
+     *
+     * - adds $character to the 'charactersGuessed' property
+     * - will decrease the triesLeft property when word does not contain character
+     * - will set the game status to 'fail' when triesLeft = 0
+     * - will set the game status to 'success' when all characters are guessed
+     *
      * @param $character
      * @throws InvalidCharacterGuessedException
      * @throws GameAlreadyFinishedException
@@ -86,6 +93,20 @@ class Game
         $this->updateStatusAfterGuessing($character);
 
         return $this;
+    }
+
+    /**
+     * Meant to expose some properties for use outside of this object context
+     *
+     * @return GameData
+     */
+    public function toDto()
+    {
+        return new GameData(
+            $this->triesLeft,
+            $this->status,
+            $this->getWord()->withOnlyGuessedCharacters($this->charactersGuessed)
+        );
     }
 
     /**
@@ -113,14 +134,6 @@ class Game
     }
 
     /**
-     * @return integer
-     */
-    private function getId()
-    {
-        return $this->id;
-    }
-
-    /**
      * @return Word
      */
     private function getWord()
@@ -143,17 +156,5 @@ class Game
         if ($this->numberOfTriesLeft() === 0) {
             $this->status = self::STATUS_FAIL;
         }
-    }
-
-    /**
-     * @return GameData
-     */
-    public function toDto()
-    {
-        return new GameData(
-            $this->triesLeft,
-            $this->status,
-            $this->getWord()->withOnlyGuessedCharacters($this->charactersGuessed)
-        );
     }
 }
