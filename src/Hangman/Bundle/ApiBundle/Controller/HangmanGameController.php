@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\Routing\RouterInterface;
 
 class HangmanGameController
 {
@@ -19,17 +20,38 @@ class HangmanGameController
     private $gameService;
 
     /**
-     * @param GameService $gameService
+     * @var RouterInterface
      */
-    public function __construct(GameService $gameService)
+    private $router;
+
+    /**
+     * @param GameService $gameService
+     * @param RouterInterface $router
+     */
+    public function __construct(GameService $gameService, RouterInterface $router)
     {
         $this->gameService = $gameService;
+        $this->router = $router;
     }
     
     /**
      * @return Response
      */
     public function startAction()
+    {
+        $gameData = $this->gameService->startNewGame();
+
+        return new JsonResponse(
+            $gameData,
+            201,
+            ['Location' => $this->router->generate('hangman_api_game', ['gameId' => $gameData->id])]
+        );
+    }
+
+    /**
+     * @return Response
+     */
+    public function viewAction()
     {
         return new JsonResponse($this->gameService->startNewGame());
     }

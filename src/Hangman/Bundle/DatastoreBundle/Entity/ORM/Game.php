@@ -105,7 +105,8 @@ class Game
         return new GameData(
             $this->triesLeft,
             $this->status,
-            $this->getWord()->withOnlyGuessedCharacters($this->charactersGuessed)
+            $this->getWord()->withOnlyGuessedCharacters($this->charactersGuessed),
+            $this->id
         );
     }
 

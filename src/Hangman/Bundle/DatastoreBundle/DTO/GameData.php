@@ -31,15 +31,21 @@ class GameData
     public $tries_left;
 
     /**
+     * @var integer
+     */
+    public $id;
+
+    /**
      * @param integer $triesLeft
      * @param string $status one of busy|fail|success
      * @param string $word
-     * @param
+     * @param integer $id used for resource id exposure
      */
-    public function __construct($triesLeft, $status, $word)
+    public function __construct($triesLeft, $status, $word, $id)
     {
         $this->tries_left = $triesLeft;
         $this->status = $status;
         $this->word = $word;
+        $this->id = $id;
     }
 }

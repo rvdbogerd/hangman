@@ -18,27 +18,34 @@ class HangmanGameControllerTest extends \PHPUnit_Framework_TestCase
 {
     public function testStartGameShouldReturnJsonResponse()
     {
-        $controller = new HangmanGameController($this->getGameServiceMock());
+        $controller = new HangmanGameController(
+            $this->getGameServiceMock(),
+            $this->getRouterMock()
+        );
         $response = $controller->startAction();
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\JsonResponse', $response);
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(201, $response->getStatusCode());
         $this->assertJsonStringEqualsJsonString(
-            '{"word":".......","status":"busy","tries_left":11}',
+            '{"word":".......","status":"busy","tries_left":11,"id":null}',
             $response->getContent()
         );
+
+        $this->assertSame('someurlvalue', $response->headers->get('location'));
     }
 
     public function testGuessShouldReturnJsonResponse()
     {
-        $controller = new HangmanGameController($this->getGameServiceMock());
+        $controller = new HangmanGameController(
+            $this->getGameServiceMock(),
+            $this->getRouterMock()
+        );
         $response = $controller->guessAction(1, $this->mockGuessRequest());
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\JsonResponse', $response);
         $this->assertSame(200, $response->getStatusCode());
-
         $this->assertJsonStringEqualsJsonString(
-            '{"word":".......","status":"busy","tries_left":11}',
+            '{"word":".......","status":"busy","tries_left":11,"id":null}',
             $response->getContent()
         );
     }
@@ -69,5 +76,16 @@ class HangmanGameControllerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('a'));
 
         return $request;
+    }
+
+    protected function getRouterMock()
+    {
+        $router = $this->getMock('Symfony\Component\Routing\RouterInterface');
+
+        $router->expects($this->any())
+            ->method('generate')
+            ->willReturn('someurlvalue');
+
+        return $router;
     }
 } 
